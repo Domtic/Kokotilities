@@ -6,7 +6,6 @@
   "unity": "2022.1",
  "dependencies": {
   "com.unity.cinemachine": "2.9.7",
-  "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git?path=/Assets/NaughtyAttributes#2.1.4"
 },
   "author": {
     "name": "Koko"
