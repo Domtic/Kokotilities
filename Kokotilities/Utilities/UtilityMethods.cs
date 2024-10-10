@@ -7,8 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Koko
 {
-
-    public class Utilities
+    public static class Utilities
     {
         public static double GetRandomDouble(double min, double max)
         {
