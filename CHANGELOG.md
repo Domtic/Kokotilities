@@ -3,3 +3,7 @@
 - Time Manager example scripts and backend
 - Prime Tween package
 - NaughtyAttributes
+
+##[1.0.3] 2024-10-10
+### Second release
+- Extension methods and utility classes added
