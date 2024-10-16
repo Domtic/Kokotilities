@@ -16,6 +16,7 @@ public class TransitionCurtain : MonoBehaviour
     public static Action OnReadyToGo;
     public static Action OnAnySceneLoaded;
     [Header("Configuration")]
+
     [SerializeField]
     private TweenSettings settings;
     [SerializeField, EnableIf(EConditionOperator.And, "_DoFakeDuration")]
