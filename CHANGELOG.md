@@ -2,8 +2,12 @@
 ### First release
 - Time Manager example scripts and backend
 - Prime Tween package
-- NaughtyAttributes
+- Naughty Attributes
 
 ##[1.0.3] 2024-10-10
 ### Second release
 - Extension methods and utility classes added
+
+##[1.0.4] 2024-10-10
+### Second release
+- Bugfixes and assembly def
