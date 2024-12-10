@@ -212,6 +212,11 @@ namespace Koko
             return GetWorldPositionFromUI_Perspective(Input.mousePosition, worldCamera);
         }
 
+        public static Vector3 GetWorldPositionFromUIOBject(Camera camera, RectTransform UIObjectPos)
+        {
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(UIObjectPos, UIObjectPos.position, camera, out Vector3 WorldPosition);
+            return WorldPosition;
+        }
         public static Vector3 GetWorldPositionFromUI_Perspective(Vector3 screenPosition, Camera worldCamera)
         {
             Ray ray = worldCamera.ScreenPointToRay(screenPosition);

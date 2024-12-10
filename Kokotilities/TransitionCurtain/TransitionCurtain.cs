@@ -4,21 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using PrimeTween;
 using NaughtyAttributes;
 using ImprovedTimers;
-using PrimeTween;
-public class TransitionCurtain : MonoBehaviour
+    
+public class TransitionCurtain : SingletonAsComponent<TransitionCurtain>
 {
-    public static TransitionCurtain Instance;
+    public static TransitionCurtain Instance { get { return (TransitionCurtain)_Instance; } }
     public const float MAX_FADE_VALUE = 1.0f;
     public const float MIN_FADE_VALUE = 0.0f;
 
-    public static Action OnReadyToGo;
+    public static Action OnTransitionScreenOff;
     public static Action OnAnySceneLoaded;
     [Header("Configuration")]
-
     [SerializeField]
-    private TweenSettings settings;
+    private TweenSettings _settings;
+    [SerializeField]
+    private bool _DoFakeDuration;
     [SerializeField, EnableIf(EConditionOperator.And, "_DoFakeDuration")]
     private float _FakeLoadTimeDuration;
     [SerializeField]
@@ -44,14 +46,8 @@ public class TransitionCurtain : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
         m_CanvasRef = GetComponent<Canvas>();
+        m_CanvasGroup.alpha = 0.99f;
     }
 
     public void BeginCurtainTransition(string _sceneName, Sprite _BackgroundImg = null)
@@ -62,9 +58,9 @@ public class TransitionCurtain : MonoBehaviour
         m_CanvasGroup.blocksRaycasts = true;
         m_AdviceText.text = "";
         m_LoadingText.text = "Loading . . .";
-        Tween.Alpha(m_CanvasGroup, 1, settings).OnComplete(() =>
-        {
 
+
+         Tween.Alpha(m_CanvasGroup, 1 , _settings.duration, _settings.ease).OnComplete(() => {
             m_BackgroundImage.sprite = _BackgroundImg;
             if (m_BackgroundImage.sprite != null)
                 m_BackgroundImage.color = Color.white;
@@ -75,7 +71,7 @@ public class TransitionCurtain : MonoBehaviour
             Action onSceneFinishedLoading = () => _LoadingSceneTimer.Stop();
             GameCordinator.Instance.GoToScene(_sceneName, onSceneFinishedLoading);
             _LoadingSceneTimer.Start();
-
+          
             StartCoroutine(AnimLoadingText());
             StartCoroutine(ChangAdviceText());
         });
@@ -89,10 +85,9 @@ public class TransitionCurtain : MonoBehaviour
     private void SceneFinishedLoading()
     {
         OnAnySceneLoaded?.Invoke();
-        Tween.Alpha(m_CanvasGroup, 0, settings).OnComplete(() =>
-        {
+        Tween.Alpha(m_CanvasGroup, 0, _settings.duration, _settings.ease).OnComplete(() => {
             _LoadingSceneTimer.Dispose();
-            OnReadyToGo?.Invoke();
+            OnTransitionScreenOff?.Invoke();
             m_CanvasGroup.interactable = false;
             m_CanvasGroup.blocksRaycasts = false;
             Debug.Log("Game loop starts here");
@@ -129,6 +124,19 @@ public class TransitionCurtain : MonoBehaviour
             yield return new WaitForSeconds(_AdviceDuration);
            Debug.Log("Changing tip");
         }
+    }
+
+    public void ForceCurtainRemoval()
+    {
+        if(_LoadingSceneTimer != null)
+            _LoadingSceneTimer.Dispose();
+
+        OnTransitionScreenOff?.Invoke();
+        m_CanvasGroup.interactable = false;
+        m_CanvasGroup.blocksRaycasts = false;
+        m_CanvasGroup.alpha = 0;
+
+        StopAllCoroutines();
     }
 
     private void OnDestroy()

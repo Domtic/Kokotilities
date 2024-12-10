@@ -15,6 +15,7 @@ public class KokoUpdate : MonoBehaviour
         customUpdate.Start();
     }
 
+
     private void OnDestroy()
     {
         customUpdate.Dispose();
@@ -37,6 +38,6 @@ public class KokoUpdate : MonoBehaviour
 
     private void CustomUpdate()
     {
-
+        Debug.Log("Asdasd");
     }
 }
